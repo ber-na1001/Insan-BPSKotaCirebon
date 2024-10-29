@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit import option_menu
+from streamlit_option_menu import option_menu
 import tentang_inflasi
 import input_data_inflasi
 import data_inflasi
