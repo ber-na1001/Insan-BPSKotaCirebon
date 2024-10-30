@@ -6,10 +6,10 @@ def create_connection():
     """Create a database connection to the MySQL database."""
     try:
         conn = mysql.connector.connect(
-            host="localhost",        
-            user="root",          
-            password="",  
-            database="db_insan" 
+            host="sql12.freesqldatabase.com",        
+            user="sql12741637",          
+            password="jTA2tzJ2bc",  
+            database="sql12741637"  
         )
         return conn
     except Error as e:
