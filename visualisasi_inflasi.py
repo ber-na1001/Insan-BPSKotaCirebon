@@ -8,10 +8,10 @@ import mysql.connector
 # Fungsi untuk menghubungkan dan mengambil data dari database
 def get_data(query):
     connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="db_insan"
+        host="sql12.freesqldatabase.com",        
+        user="sql12741637",          
+        password="jTA2tzJ2bc",  
+        database="sql12741637" 
     )
     data = pd.read_sql(query, connection)
     connection.close()
