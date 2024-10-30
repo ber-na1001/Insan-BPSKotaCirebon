@@ -9,7 +9,7 @@ def create_connection():
         host="sql12.freesqldatabase.com",        
         user="sql12741637",          
         password="jTA2tzJ2bc",  
-        database="sql12741637"   
+        database="sql12741637" 
     )
     return connection
 
@@ -34,6 +34,9 @@ def insert_data(table_name, data):
         elif table_name == "inflasi_mtm":
             sql = '''INSERT INTO inflasi_mtm (Waktu, `Komoditas mtm`, `Andil mtm (%)`, `Fenomena Berdasarkan Inflasi mtm`) VALUES (%s, %s, %s, %s)'''
             cursor.execute(sql, data)
+        elif table_name == "inflasi_ytd":
+            sql = '''INSERT INTO inflasi_ytd (Waktu, `Komoditas ytd`, `Andil ytd (%)`, `Fenomena Berdasarkan Inflasi ytd`) VALUES (%s, %s, %s, %s)'''
+            cursor.execute(sql, data)
 
         connection.commit()
         cursor.close()
@@ -49,7 +52,7 @@ def show():
 
     # Memilih tabel
     st.subheader("Pilih Tabel untuk Input Data")
-    table_choice = st.selectbox("Pilih Tabel", ["inflasi", "inflasi_yoy", "inflasi_mtm"])
+    table_choice = st.selectbox("Pilih Tabel", ["inflasi", "inflasi_yoy", "inflasi_mtm", "inflasi_ytd"])
 
     current_year = datetime.now().year
 
@@ -71,6 +74,9 @@ def show():
             
             # Input Inflasi MtM (%), bisa negatif
             inflasi_mtm = st.number_input("Inflasi MtM (%)", format="%.2f", key="inflasi_mtm")
+
+            # Input Inflasi YtD (%), bisa negatif
+            inflasi_ytd = st.number_input("Inflasi YtD (%)", format="%.2f", key="inflasi_ytd")
         
         elif table_choice == "inflasi_yoy":
             st.subheader("10 Komoditas dengan Nilai Inflasi YoY Tertinggi")
@@ -106,6 +112,23 @@ def show():
                 fenomena = st.text_area(f"Fenomena Komoditas Deflasi MtM {i}", key=f"fenomena_deflasi_mtm_{i}")
                 komoditas_deflasi_mtm.append((waktu, komoditas, andil_input, fenomena))
         
+        elif table_choice == "inflasi_ytd":
+            st.subheader("10 Komoditas dengan Nilai Inflasi YtD Tertinggi")
+            komoditas_inflasi_ytd = []
+            for i in range(1, 11):
+                komoditas = st.text_input(f"Komoditas Inflasi YtD {i}", key=f"kom_inflasi_ytd_{i}")
+                andil_input = st.number_input(f"Andil Komoditas Inflasi YtD {i} (%)", min_value=0.0, format="%.4f", key=f"andil_inflasi_mtm_{i}")
+                fenomena = st.text_area(f"Fenomena Komoditas Inflasi YtD {i}", key=f"fenomena_inflasi_ytd_{i}")
+                komoditas_inflasi_ytd.append((waktu, komoditas, andil_input, fenomena))
+
+            st.subheader("10 Komoditas dengan Nilai Deflasi YtD Tertinggi")
+            komoditas_deflasi_ytd = []
+            for i in range(1, 11):
+                komoditas = st.text_input(f"Komoditas Deflasi YtD {i}", key=f"kom_deflasi_ytd_{i}")
+                andil_input = st.number_input(f"Andil Komoditas Deflasi YtD {i} (%)", max_value=0.0, format="%.4f", key=f"andil_deflasi_mtm_{i}")
+                fenomena = st.text_area(f"Fenomena Komoditas Deflasi YtD {i}", key=f"fenomena_deflasi_ytd_{i}")
+                komoditas_deflasi_ytd.append((waktu, komoditas, andil_input, fenomena))
+        
         # Tombol Submit
         submit_button = st.form_submit_button(label="Submit Data")
 
@@ -130,17 +153,26 @@ def show():
                     if len(data) != 4 or not data[1] or data[2] is None or not data[3]:
                         all_filled = False
                         st.error("Isian untuk Komoditas Inflasi/Deflasi MtM belum lengkap!")
+            elif table_choice == "inflasi_ytd":
+                for data in komoditas_inflasi_ytd + komoditas_deflasi_ytd:
+                    # Pastikan data yang di-unpack sesuai
+                    if len(data) != 4 or not data[1] or data[2] is None or not data[3]:
+                        all_filled = False
+                        st.error("Isian untuk Komoditas Inflasi/Deflasi YtD belum lengkap!")
 
             if all_filled:
                 # Menyimpan data ke database
                 if table_choice == "inflasi":
-                    insert_data("inflasi", (waktu, inflasi_yoy, inflasi_mtm))
+                    insert_data("inflasi", (waktu, inflasi_yoy, inflasi_mtm, inflasi_ytd))
                 elif table_choice == "inflasi_yoy":
                     for data in komoditas_inflasi_yoy + komoditas_deflasi_yoy:
                         insert_data("inflasi_yoy", data)
                 elif table_choice == "inflasi_mtm":
                     for data in komoditas_inflasi_mtm + komoditas_deflasi_mtm:
                         insert_data("inflasi_mtm", data)
+                elif table_choice == "inflasi_ytd":
+                    for data in komoditas_inflasi_ytd + komoditas_deflasi_ytd:
+                        insert_data("inflasi_ytd", data)
 
                 st.success("Data berhasil disubmit!")
                 st.write(f"Data yang diinput untuk tabel {table_choice} berhasil disimpan.")
