@@ -6,10 +6,10 @@ from datetime import datetime
 # Fungsi untuk menghubungkan dan mengambil data dari database
 def create_connection():
     connection = mysql.connector.connect(
-        host="localhost",
-        user="root",  
-        password="",  
-        database="db_insan"  
+        host="sql12.freesqldatabase.com",        
+        user="sql12741637",          
+        password="jTA2tzJ2bc",  
+        database="sql12741637"   
     )
     return connection
 
