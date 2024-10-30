@@ -8,7 +8,7 @@ def get_data(query):
         host="sql12.freesqldatabase.com",        
         user="sql12741637",          
         password="jTA2tzJ2bc",  
-        database="sql12741637"   
+        database="sql12741637"  
     )
     data = pd.read_sql(query, connection)
     connection.close()
@@ -17,10 +17,10 @@ def get_data(query):
 # Function to perform update data
 def update_data(query):
     connection = mysql.connector.connect(
-        host="sql12.freesqldatabase.com",        
-        user="sql12741637",          
-        password="jTA2tzJ2bc",  
-        database="sql12741637"
+        host="localhost",
+        user="root",
+        password="",
+        database="db_insan"
     )
     cursor = connection.cursor()
     cursor.execute(query)
@@ -43,7 +43,7 @@ def update_row(table, row_id, updated_row):
 # Function to show data and RUD buttons with pagination
 def show():
     st.title("Data Inflasi Kota Cirebon")
-    data_option = st.selectbox("Pilih Data:", ["Inflasi", "Andil Inflasi YoY", "Andil Inflasi MtM"])
+    data_option = st.selectbox("Pilih Data:", ["Inflasi", "Andil Inflasi YoY", "Andil Inflasi MtM", "Andil Inflasi YtD"])
 
     table_name = ""
     if data_option == "Inflasi":
@@ -52,6 +52,8 @@ def show():
         table_name = "inflasi_yoy"
     elif data_option == "Andil Inflasi MtM":
         table_name = "inflasi_mtm"
+    elif data_option == "Andil Inflasi YtD":
+        table_name = "inflasi_ytd"
 
     query = f"SELECT * FROM {table_name}"
     data = get_data(query)
