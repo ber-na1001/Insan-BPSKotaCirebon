@@ -17,10 +17,10 @@ def get_data(query):
 # Function to perform update data
 def update_data(query):
     connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="db_insan"
+        host="sql12.freesqldatabase.com",        
+        user="sql12741637",          
+        password="jTA2tzJ2bc",  
+        database="sql12741637" 
     )
     cursor = connection.cursor()
     cursor.execute(query)
